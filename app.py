@@ -202,6 +202,14 @@ def get_products():
         }
         for p in products
     ])
+@app.route("/api/debug/db")
+def debug_db():
+    try:
+        users_count = User.query.count()
+        products_count = Product.query.count()
+        return {"users": users_count, "products": products_count}
+    except Exception as e:
+        return {"error": str(e)}, 500
 
 # Get product by ID (optionally logs view if user_id is provided)
 @app.route("/api/products/<int:pid>")
