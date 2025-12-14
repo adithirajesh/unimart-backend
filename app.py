@@ -66,6 +66,54 @@ def setup_demo_products():
                     description="All pieces included",
                     image="https://picsum.photos/300?random=8"
                 ),
+                Product(
+                    name="Lab Coat",
+                    price=20,
+                    description="Year 1 chem textbook, light notes",
+                    image="https://picsum.photos/300?random=1"
+                ),
+                Product(
+                    name="Sneakers",
+                    price=18,
+                    description="Used but clean",
+                    image="https://picsum.photos/300?random=2"
+                ),
+                Product(
+                    name="Mountain bike",
+                    price=45,
+                    description="Allowed in exams",
+                    image="https://picsum.photos/300?random=3"
+                ),
+                Product(
+                    name="Bedside table",
+                    price=25,
+                    description="Size M, worn twice",
+                    image="https://picsum.photos/300?random=4"
+                ),
+                Product(
+                    name="Water bottle",
+                    price=12,
+                    description="LED, adjustable brightness",
+                    image="https://picsum.photos/300?random=5"
+                ),
+                Product(
+                    name="Rice Cooker",
+                    price=32,
+                    description="Great for dorm cooking",
+                    image="https://picsum.photos/300?random=6"
+                ),
+                Product(
+                    name="Sony Noise Cancelling Headphones",
+                    price=70,
+                    description="XM3 model",
+                    image="https://picsum.photos/300?random=7"
+                ),
+                Product(
+                    name="Board Game – Catan",
+                    price=20,
+                    description="All pieces included",
+                    image="https://picsum.photos/300?random=8"
+                ),
             ]
 
 
@@ -171,10 +219,10 @@ def get_product_by_id(pid):
         "description": getattr(p, "description", ""),
         "image": getattr(p, "image", "")
     })
+setup_demo_products()
 
 # -----------------------
 # Run the app
 # -----------------------
 if __name__ == "__main__":
-    setup_demo_products()
     app.run(debug=True)
