@@ -5,7 +5,11 @@ from models import User, Product, UserActivity
 from routes.auth_routes import auth
 
 app = Flask(__name__)
-CORS(app)
+CORS(
+    app,
+    resources={r"/api/*": {"origins": "*"}},
+    supports_credentials=True
+)
 
 # Initialize DB
 init_db(app)
