@@ -162,6 +162,13 @@ def debug_db():
         return {"users": users_count, "products": products_count}
     except Exception as e:
         return {"error": str(e)}, 500
+        
+@app.route("/api/debug/reset-products", methods=["POST"])
+def reset_products():
+    Product.query.delete()
+    db.session.commit()
+    setup_demo_products()
+    return {"message": "Products reset"}
 
 @app.route("/api/activity", methods=["POST"])
 def log_activity():
@@ -206,4 +213,5 @@ setup_demo_products()
 # -----------------------
 if __name__ == "__main__":
     app.run(debug=True)
+
 
