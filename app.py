@@ -163,10 +163,16 @@ def debug_db():
         
 @app.route("/api/debug/reset-products", methods=["POST"])
 def reset_products():
-    Product.query.delete()
-    db.session.commit()
-    setup_demo_products()
-    return {"message": "Products reset"}
+    try:
+        UserActivity.query.delete()
+        Product.query.delete()
+        db.session.commit()
+
+        setup_demo_products()
+        return {"message": "Products reset"}
+    except Exception as e:
+        db.session.rollback()
+        return {"error": str(e)}, 500
 
 
 # Get product by ID (optionally logs view if user_id is provided)
@@ -196,6 +202,7 @@ setup_demo_products()
 # -----------------------
 if __name__ == "__main__":
     app.run(debug=True)
+
 
 
 
