@@ -170,21 +170,6 @@ def reset_products():
     setup_demo_products()
     return {"message": "Products reset"}
 
-@app.route("/api/activity", methods=["POST"])
-def log_activity():
-    data = request.get_json()
-    user_id = data.get("user_id")
-    product_id = data.get("product_id")
-    action = data.get("action")
-
-    if not user_id or not product_id or not action:
-        return jsonify({"error": "user_id, product_id, and action required"}), 400
-
-    activity = UserActivity(user_id=user_id, product_id=product_id, action=action)
-    db.session.add(activity)
-    db.session.commit()
-
-    return jsonify({"message": "Activity logged successfully"})
 
 # Get product by ID (optionally logs view if user_id is provided)
 @app.route("/api/products/<int:pid>")
@@ -213,5 +198,6 @@ setup_demo_products()
 # -----------------------
 if __name__ == "__main__":
     app.run(debug=True)
+
 
 
