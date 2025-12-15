@@ -7,7 +7,7 @@ from database import db, init_db
 from models import User, Product, UserActivity
 from routes.auth_routes import auth
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder="static", static_url_path="/static")
 CORS(
     app,
     resources={r"/api/*": {"origins": "*"}},
@@ -203,6 +203,7 @@ setup_demo_products()
 # -----------------------
 if __name__ == "__main__":
     app.run(debug=True)
+
 
 
 
