@@ -59,9 +59,7 @@ def setup_demo_products():
                         price = 0
 
                     image_filename = image_map.get(name, "book.png")
-                    image_url = url_for(
-                        "static", filename=f"images/{image_filename}", _external=True
-                    )
+                    image_url = url_for( "static", filename=f"images/{image_filename}")
 
                     demo_products.append(
                         Product(
@@ -198,6 +196,7 @@ setup_demo_products()
 # -----------------------
 if __name__ == "__main__":
     app.run(debug=True)
+
 
 
 
