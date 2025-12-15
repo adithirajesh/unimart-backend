@@ -1,4 +1,7 @@
-from flask import Flask, jsonify, request
+import csv
+import os
+
+from flask import Flask, jsonify, request, url_for
 from flask_cors import CORS
 from database import db, init_db
 from models import User, Product, UserActivity
@@ -21,108 +24,57 @@ app.register_blueprint(auth, url_prefix="/api")
 def setup_demo_products():
     with app.app_context():
         if Product.query.count() == 0:
-            demo_products = [
-                Product(
-                    name="Organic Chemistry Textbook",
-                    price=20,
-                    description="Year 1 chem textbook, light notes",
-                    image="https://picsum.photos/300?random=1"
-                ),
-                Product(
-                    name="IB Biology HL Textbook",
-                    price=18,
-                    description="Used but clean",
-                    image="https://picsum.photos/300?random=2"
-                ),
-                Product(
-                    name="Casio FX-CG50 Calculator",
-                    price=45,
-                    description="Allowed in exams",
-                    image="https://picsum.photos/300?random=3"
-                ),
-                Product(
-                    name="Imperial College Hoodie",
-                    price=25,
-                    description="Size M, worn twice",
-                    image="https://picsum.photos/300?random=4"
-                ),
-                Product(
-                    name="Desk Lamp",
-                    price=12,
-                    description="LED, adjustable brightness",
-                    image="https://picsum.photos/300?random=5"
-                ),
-                Product(
-                    name="Rice Cooker",
-                    price=32,
-                    description="Great for dorm cooking",
-                    image="https://picsum.photos/300?random=6"
-                ),
-                Product(
-                    name="Sony Noise Cancelling Headphones",
-                    price=70,
-                    description="XM3 model",
-                    image="https://picsum.photos/300?random=7"
-                ),
-                Product(
-                    name="Board Game – Catan",
-                    price=20,
-                    description="All pieces included",
-                    image="https://picsum.photos/300?random=8"
-                ),
-                Product(
-                    name="Lab Coat",
-                    price=20,
-                    description="Year 1 chem textbook, light notes",
-                    image="https://picsum.photos/300?random=1"
-                ),
-                Product(
-                    name="Sneakers",
-                    price=18,
-                    description="Used but clean",
-                    image="https://picsum.photos/300?random=2"
-                ),
-                Product(
-                    name="Mountain bike",
-                    price=45,
-                    description="Allowed in exams",
-                    image="https://picsum.photos/300?random=3"
-                ),
-                Product(
-                    name="Bedside table",
-                    price=25,
-                    description="Size M, worn twice",
-                    image="https://picsum.photos/300?random=4"
-                ),
-                Product(
-                    name="Water bottle",
-                    price=12,
-                    description="LED, adjustable brightness",
-                    image="https://picsum.photos/300?random=5"
-                ),
-                Product(
-                    name="Rice Cooker",
-                    price=32,
-                    description="Great for dorm cooking",
-                    image="https://picsum.photos/300?random=6"
-                ),
-                Product(
-                    name="Sony Noise Cancelling Headphones",
-                    price=70,
-                    description="XM3 model",
-                    image="https://picsum.photos/300?random=7"
-                ),
-                Product(
-                    name="Board Game – Catan",
-                    price=20,
-                    description="All pieces included",
-                    image="https://picsum.photos/300?random=8"
-                ),
-            ]
+            csv_path = os.path.join(app.root_path, "static", "listings.csv")
+            image_map = {
+                "Mini-Fridge": "minifridge.png",
+                "Study Desk Lamp": "desklamp.png",
+                "Calculus III Notes": "mathnotes.png",
+                "Ergonomic Desk Chair": "chair.png",
+                "Blackout Curtains (Set of 2)": "curtains.png",
+                "Yoga Mat": "yogamat.png",
+                "HDMI Monitor (24-inch)": "monitor.png",
+                "Bike Lock (U-Lock)": "lock.png",
+                "Vacuum Cleaner (Small)": "vaccuum.png",
+                "Iron & Ironing Board": "iron.png",
+                "Formal Wear/Suit": "suit.png",
+                "Outdoor Camping Tent": "tent.png",
+                "Moving Boxes (Bulk)": "boxes.png",
+                "Video Game Console (Older)": "wii.png",
+                "Tool Kit (Basic)": "toolkit.png",
+                "Portable Projector": "projector.png",
+                "Language Learning Books": "book.png",
+            }
 
+            demo_products = []
+            with open(csv_path, newline="", encoding="utf-8") as f:
+                reader = csv.DictReader(f)
+                for row in reader:
+                    name = row.get("Name", "").strip()
+                    price_raw = row.get("Price", "0").strip()
+                    description = row.get("Description", "").strip()
 
-            db.session.add_all(demo_products)
-            db.session.commit()
+                    try:
+                        price = float(price_raw)
+                    except ValueError:
+                        price = 0
+
+                    image_filename = image_map.get(name, "book.png")
+                    image_url = url_for(
+                        "static", filename=f"images/{image_filename}", _external=True
+                    )
+
+                    demo_products.append(
+                        Product(
+                            name=name,
+                            price=price,
+                            description=description,
+                            image=image_url
+                        )
+                    )
+
+            if demo_products:
+                db.session.add_all(demo_products)
+                db.session.commit()
 
 # -----------------------
 # Routes
