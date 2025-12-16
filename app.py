@@ -7,7 +7,7 @@ from database import db, init_db
 from models import User, Product, UserActivity
 from routes.auth_routes import auth
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder="static", static_url_path="/static")
 CORS(
     app,
     resources={r"/api/*": {"origins": "*"}},
@@ -59,9 +59,8 @@ def setup_demo_products():
                         price = 0
 
                     image_filename = image_map.get(name, "book.png")
-                    image_url = url_for(
-                        "static", filename=f"images/{image_filename}", _external=True
-                    )
+                    BACKEND_URL = os.getenv("BACKEND_URL","https://unimart-backend-9jbf.onrender.com")
+                    image_url = f"https://unimart-backend-9jbf.onrender.com/static/images/{image_filename}"
 
                     demo_products.append(
                         Product(
@@ -162,6 +161,20 @@ def debug_db():
         return {"users": users_count, "products": products_count}
     except Exception as e:
         return {"error": str(e)}, 500
+        
+@app.route("/api/debug/reset-products", methods=["POST"])
+def reset_products():
+    try:
+        UserActivity.query.delete()
+        Product.query.delete()
+        db.session.commit()
+
+        setup_demo_products()
+        return {"message": "Products reset"}
+    except Exception as e:
+        db.session.rollback()
+        return {"error": str(e)}, 500
+
 
 # Get product by ID (optionally logs view if user_id is provided)
 @app.route("/api/products/<int:pid>")
@@ -190,3 +203,11 @@ setup_demo_products()
 # -----------------------
 if __name__ == "__main__":
     app.run(debug=True)
+
+
+
+
+
+
+
+
