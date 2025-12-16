@@ -1,0 +1,15 @@
+PGPASSWORD=D17PCO9wu75EdHxKZK8F2AhfEPCiRTD8 \
+psql -h dpg-d4vfppumcj7s73dmnueg-a.frankfurt-postgres.render.com \
+-U unimart_db_a307_user \
+-d unimart_db_a307
+
+#######################################################################################################
+
+\copy (
+  SELECT
+    u.*,
+    ua.*
+  FROM "user" u
+  LEFT JOIN user_activity ua
+    ON ua.user_id = u.id
+) TO 'users_with_activity.csv' CSV HEADER;
